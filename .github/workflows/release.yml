@@ -1,0 +1,107 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  linux:
+    name: Linux bundles
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libxdo-dev \
+            patchelf \
+            libfuse2t64
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Validate data and types
+        run: npm run check
+
+      - name: Build AppImage, deb and rpm
+        run: npm run tauri build -- --bundles appimage,deb,rpm
+
+      - name: Collect bundles
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          mkdir -p release
+          for file in src-tauri/target/release/bundle/appimage/*.AppImage; do
+            [ -e "$file" ] || continue
+            cp "$file" "release/Soz_${version}_amd64.AppImage"
+          done
+          for file in src-tauri/target/release/bundle/deb/*.deb; do
+            [ -e "$file" ] || continue
+            cp "$file" "release/Soz_${version}_amd64.deb"
+          done
+          for file in src-tauri/target/release/bundle/rpm/*.rpm; do
+            [ -e "$file" ] || continue
+            cp "$file" "release/Soz_${version}_x86_64.rpm"
+          done
+          ls -lh release
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: soz-linux-${{ github.ref_name }}
+          path: release/*
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Söz ${{ github.ref_name }}
+          files: release/*
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          body: |
+            ## Söz ${{ github.ref_name }}
+
+            Türkçe ve İngilizce, çevrimdışı Kutsal Kitap okuyucu.
+
+            ### Linux
+            - **AppImage** — `chmod +x` yapıp doğrudan çalıştırın.
+            - **.deb** — Debian/Ubuntu/KDE Neon: `sudo apt install ./Soz_*_amd64.deb`
+            - **.rpm** — Fedora/openSUSE: `sudo dnf install ./Soz_*_x86_64.rpm`
+
+            AppImage için sistemde WebKitGTK 4.1 ve GTK 3 bulunmalıdır
+            (`webkit2gtk-4.1`, `gtk3`).
+
+            İndirilen metinler: YTC (CC BY-ND 4.0), KJV ve WEB (public domain).
+            Ayrıntılar için `THIRD_PARTY_NOTICES.md`.
