@@ -336,6 +336,18 @@ Screenshots are optional; the checks above are the contract.
 - Never commit `node_modules/`, `dist/`, `data/source/`, `src-tauri/target/` or
   `src-tauri/gen/`.
 
+### Documentation
+
+- `README.md` is the English landing page; `README.tr.md` is its full Turkish
+  mirror. Both start with the same language switcher — keep the order
+  (`English · Türkçe`) and the link targets intact so readers can switch with one
+  click.
+- When features, commands, requirements, keyboard shortcuts or licensing change,
+  update **both** files in the same commit. The Turkish page is not a summary:
+  it carries the same sections and the same facts.
+- `THIRD_PARTY_NOTICES.md` and `AGENTS.md` stay English-only, because they are
+  legal and engineering references.
+
 ---
 
 ## 10. Known limitations and sensible next steps
