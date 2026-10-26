@@ -9,3 +9,8 @@ src-tauri/gen/
 # Local editor/OS noise
 .vscode/
 .idea/
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example

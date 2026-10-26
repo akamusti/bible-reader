@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "check": "tsc --noEmit && node scripts/check-data.mjs",
+    "check": "node scripts/check-secrets.mjs && tsc --noEmit && node scripts/check-data.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
     "preview": "vite preview",
     "data": "node scripts/build-bible-data.mjs",
     "tauri": "tauri",

@@ -79,6 +79,7 @@ public/data/             generated Bible JSON (committed)
 scripts/
   build-bible-data.mjs   USFM → JSON pipeline (network, SHA-256 pinned)
   check-data.mjs         offline data integrity check
+  check-secrets.mjs      credential/token scan (part of npm run check)
 src-tauri/               Tauri 2 shell (Rust)
   src/lib.rs             app builder (no IPC commands yet)
   tauri.conf.json        window, bundle targets, identifier
@@ -297,10 +298,15 @@ Rules:
 Before opening a PR or committing:
 
 ```bash
-npm run check     # TypeScript + data integrity (must pass)
+npm run check     # secret scan + TypeScript + data integrity (must pass)
 npm run build     # production bundle
 npm run desktop   # manual smoke test
 ```
+
+`npm run check` starts with `check-secrets.mjs`, which scans every tracked file
+for API keys, tokens, passwords, private keys and credential-bearing URLs, and
+fails on tracked `.env*` files. It reports locations only, never the matched
+value. Run `npm run check:secrets` alone for a fast scan.
 
 Manual checklist:
 
@@ -335,6 +341,44 @@ Screenshots are optional; the checks above are the contract.
   the trailer for agent-authored changes.
 - Never commit `node_modules/`, `dist/`, `data/source/`, `src-tauri/target/` or
   `src-tauri/gen/`.
+
+### Commit and push workflow
+
+Agents finish a task by committing and pushing it — no confirmation round-trip
+is needed. The order is fixed:
+
+1. **Check first.** Run `npm run check` (which begins with the secret scan) and,
+   for code changes, `npm run build`. Never commit on a red check and never skip
+   it with `--no-verify`.
+2. **Scan for secrets.** `npm run check:secrets` must pass. A hit means the
+   value is removed, moved to an environment variable, or rotated — never
+   committed, and never pasted into a commit message, issue or log.
+3. **Stage deliberately.** `git add <paths>` for the files the task touched;
+   review `git status` and `git diff --cached`.
+4. **Commit.** Conventional subject, focused body, co-author trailer (below).
+5. **Push.** `git push origin <current-branch>`; on `main` this is a normal
+   fast-forward push. Never force-push `main`.
+6. **Report.** Return the commit SHA and the pushed branch in the final message.
+
+Rules that bound this autonomy:
+
+- Do not commit unrelated work, generated artefacts, or files the user did not
+  ask for; leave them uncommitted and say so.
+- If the check, build or push fails, stop, report the failure and the exact
+  command, and do not retry with destructive options.
+- Pushing to `main` is allowed for this repository; opening a PR or a new branch
+  still requires an explicit request.
+
+### Secrets
+
+- No API keys, tokens, passwords, private keys or credential-bearing URLs in
+  source, tests, config, docs or committed data. `.env*` is gitignored except
+  `.env.example`; use environment variables at build time and never read them
+  into the UI bundle.
+- If a secret is ever committed, treat it as leaked: rotate it first, then
+  remove it in a follow-up commit. Deleting the file is not enough.
+- The scanner lives in `scripts/check-secrets.mjs`. Extend its patterns when a
+  new provider is introduced; do not weaken it to silence a real hit.
 
 ### Documentation
 

@@ -90,15 +90,16 @@ sudo dnf install webkit2gtk4.1-devel gtk3-devel libsoup3-devel librsvg2-devel \
 
 ### Komutlar
 
-| Komut             | Açıklama                                                 |
-| ----------------- | -------------------------------------------------------- |
-| `npm ci`          | JavaScript bağımlılıklarını kurar                         |
-| `npm run dev`     | Yalnızca Vite geliştirme sunucusu → <http://localhost:1420> |
-| `npm run desktop` | Tauri penceresi (Vite'ı kendisi başlatır)                 |
-| `npm run check`   | TypeScript denetimi ve çevrimdışı veri doğrulaması        |
-| `npm run build`   | Tip denetimi ve üretim web paketi                         |
-| `npm run bundle`  | AppImage, deb ve rpm paketlerini üretir                   |
-| `npm run data`    | `public/data` verisini yeniden indirip üretir (ağ gerekir) |
+| Komut                   | Açıklama                                                        |
+| ----------------------- | --------------------------------------------------------------- |
+| `npm ci`                | JavaScript bağımlılıklarını kurar                                |
+| `npm run dev`           | Yalnızca Vite geliştirme sunucusu → <http://localhost:1420>      |
+| `npm run desktop`       | Tauri penceresi (Vite'ı kendisi başlatır)                        |
+| `npm run check`         | Gizli anahtar taraması, TypeScript denetimi ve veri doğrulaması  |
+| `npm run check:secrets` | Yalnızca kimlik bilgisi ve API anahtarı taraması                 |
+| `npm run build`         | Tip denetimi ve üretim web paketi                                |
+| `npm run bundle`        | AppImage, deb ve rpm paketlerini üretir                          |
+| `npm run data`          | `public/data` verisini yeniden indirip üretir (ağ gerekir)       |
 
 `public/data/` depoya dahildir; yeni bir klon ağa çıkmadan derlenir ve çalışır.
 

@@ -88,15 +88,16 @@ sudo dnf install webkit2gtk4.1-devel gtk3-devel libsoup3-devel librsvg2-devel \
 
 ### Commands
 
-| Command           | Description                                              |
-| ----------------- | -------------------------------------------------------- |
-| `npm ci`          | Install JavaScript dependencies                           |
-| `npm run dev`     | Vite dev server only → <http://localhost:1420>            |
-| `npm run desktop` | Tauri window (starts Vite automatically)                  |
-| `npm run check`   | TypeScript checks plus offline data integrity             |
-| `npm run build`   | Type-check and build the production web bundle            |
-| `npm run bundle`  | Build AppImage, deb and rpm bundles                       |
-| `npm run data`    | Re-download and rebuild `public/data` (requires network)  |
+| Command                 | Description                                                |
+| ----------------------- | ---------------------------------------------------------- |
+| `npm ci`                | Install JavaScript dependencies                            |
+| `npm run dev`           | Vite dev server only → <http://localhost:1420>             |
+| `npm run desktop`       | Tauri window (starts Vite automatically)                   |
+| `npm run check`         | Secret scan, TypeScript checks and offline data integrity  |
+| `npm run check:secrets` | Credential and API-key scan only                           |
+| `npm run build`         | Type-check and build the production web bundle             |
+| `npm run bundle`        | Build AppImage, deb and rpm bundles                        |
+| `npm run data`          | Re-download and rebuild `public/data` (requires network)   |
 
 `public/data/` is committed, so a fresh clone builds and runs offline.
 
