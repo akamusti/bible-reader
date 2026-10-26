@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Söz",
+  "productName": "Soz",
   "version": "0.1.0",
   "identifier": "app.soz.bible",
   "build": {
@@ -28,6 +28,14 @@
     "active": true,
     "targets": ["deb", "rpm", "appimage"],
     "category": "Education",
+    "linux": {
+      "deb": {
+        "desktopTemplate": "linux/soz.desktop.hbs"
+      },
+      "rpm": {
+        "desktopTemplate": "linux/soz.desktop.hbs"
+      }
+    },
     "shortDescription": "Türkçe ve İngilizce Kutsal Kitap okuyucu",
     "longDescription": "Söz, çevrimdışı çalışan iki dilli bir Kutsal Kitap okuyucusudur. Türkçe (YTC) ve İngilizce (KJV, WEB) çevirileri içerir.",
     "icon": [

@@ -278,9 +278,11 @@ Rules:
 
 ## 7. Tauri notes
 
-- `productName` is `Söz` (non-ASCII). Release CI copies bundles to ASCII names
-  (`Soz_<version>_amd64.AppImage`) because GitHub Release assets and some package
-  managers dislike non-ASCII names.
+- `productName` is `Soz` (ASCII) because the RPM bundler rejects non-ASCII
+  package names; the name users see is `Söz`, set by the window title and by
+  `src-tauri/linux/soz.desktop.hbs` (used as the deb/rpm `desktopTemplate`).
+  Do not set `productName` back to `Söz` — rpm bundling fails with
+  `invalid name "söz"`.
 - `frontendDist` is `../dist`; `beforeBuildCommand` runs `npm run build`.
 - CSP is `null` in v0.1 because everything is local and trusted. If remote
   content, external links or IPC are introduced, replace it with a strict CSP.
