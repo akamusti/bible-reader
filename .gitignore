@@ -1,0 +1,11 @@
+node_modules/
+dist/
+data/source/
+src-tauri/target/
+src-tauri/gen/
+*.log
+.DS_Store
+
+# Local editor/OS noise
+.vscode/
+.idea/
